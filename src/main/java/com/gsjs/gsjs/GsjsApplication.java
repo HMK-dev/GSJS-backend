@@ -1,0 +1,13 @@
+package com.gsjs.gsjs;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class GsjsApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(GsjsApplication.class, args);
+	}
+
+}
