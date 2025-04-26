@@ -2,6 +2,7 @@ package com.gsjs.gsjs.domain.company.entity;
 
 import com.gsjs.gsjs.domain.auditing.entity.BaseTimeEntity;
 import com.gsjs.gsjs.domain.common.Industry;
+import com.gsjs.gsjs.domain.common.Region;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -26,10 +27,10 @@ public class Company extends BaseTimeEntity {
     @Lob
     private String description;
 
-    //todo enum
+    @Enumerated(EnumType.STRING)
     private Industry industry;
 
-    //todo enum
+    @Enumerated(EnumType.STRING)
     private Region region;
 
     private String address;
