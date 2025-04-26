@@ -28,4 +28,15 @@ public class AiRecommendationCompany {
     @JoinColumn(name = "company_id")
     private Company company;
 
+    // business
+    public AiRecommendationCompany create(Company company) {
+        return AiRecommendationCompany.builder()
+                .company(company)
+                .build();
+    }
+
+    public void setRecommendation(AiRecommendation recommendation) {
+        this.recommendation = recommendation;
+    }
+
 }
