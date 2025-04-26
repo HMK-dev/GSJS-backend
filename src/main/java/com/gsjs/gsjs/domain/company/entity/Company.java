@@ -34,6 +34,7 @@ public class Company extends BaseTimeEntity {
     private String name;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Enumerated(EnumType.STRING)

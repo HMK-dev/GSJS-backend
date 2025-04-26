@@ -29,6 +29,7 @@ public class AiRecommendation extends BaseTimeEntity {
     private Member member;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     private String recommendationReason;
 
     @OneToMany(mappedBy = "recommendation", cascade = CascadeType.ALL, orphanRemoval = true)
