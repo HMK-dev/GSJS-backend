@@ -37,4 +37,11 @@ public class Scrap extends BaseTimeEntity {
     @JoinColumn(name = "company_id")
     private Company company;
 
+    // business
+    public Company create(Member member, Company company) {
+        this.member = member;
+        this.company = company;
+        return company;
+    }
+
 }
