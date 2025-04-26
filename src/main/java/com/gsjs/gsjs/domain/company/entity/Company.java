@@ -58,7 +58,7 @@ public class Company extends BaseTimeEntity {
      */
 
     //relation
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AnnualData> annualDataList = new ArrayList<>();
 
     //business
