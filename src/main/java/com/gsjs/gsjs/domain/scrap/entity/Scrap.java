@@ -15,6 +15,14 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {
+                        "member_id",
+                        "company_id"
+                })
+        }
+)
 public class Scrap extends BaseTimeEntity {
 
     @Id
