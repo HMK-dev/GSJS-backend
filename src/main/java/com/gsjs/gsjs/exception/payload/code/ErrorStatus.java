@@ -39,6 +39,10 @@ public enum ErrorStatus implements BaseCode {
 
     //industry error(4220 ~ 4229)
     INDUSTRY_NOT_FOUND(NOT_FOUND, 4220, "찾을 수 없는 산업입니다."),
+
+    //annual data error(4230 ~ 4239)
+    ANNUAL_DATA_NOT_FOUND(NOT_FOUND, 4230, "찾을 수 없는 연간 데이터입니다."),
+    ANNUAL_DATA_ALREADY_EXISTS(CONFLICT, 4231, "이미 존재하는 연간 데이터입니다."),
     ;
     private final HttpStatus httpStatus;
     private final Integer code;

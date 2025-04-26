@@ -1,5 +1,6 @@
 package com.gsjs.gsjs.domain.company.entity;
 
+import com.gsjs.gsjs.domain.annualData.entity.AnnualData;
 import com.gsjs.gsjs.domain.auditing.entity.BaseTimeEntity;
 import com.gsjs.gsjs.domain.common.Industry;
 import com.gsjs.gsjs.domain.common.Region;
@@ -9,6 +10,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -53,7 +57,16 @@ public class Company extends BaseTimeEntity {
      *
      */
 
+    //relation
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    private List<AnnualData> annualDataList = new ArrayList<>();
+
     //business
+    public void addAnnualData(AnnualData annualData) {
+        this.annualDataList.add(annualData);
+        annualData.setCompany(this);
+    }
+
     public void update(String name, String description, Industry industry, Region region,
                        String address, String websiteUrl, Integer establishedYear) {
         this.name = name;
