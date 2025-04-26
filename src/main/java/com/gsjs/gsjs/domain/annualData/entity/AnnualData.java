@@ -16,6 +16,14 @@ import java.math.BigDecimal;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "uk_annual_data_company_year",
+                        columnNames = {"company_id", "year"}
+                )
+        }
+)
 public class AnnualData extends BaseTimeEntity {
 
     @Id
