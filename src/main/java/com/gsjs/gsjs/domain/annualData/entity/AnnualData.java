@@ -39,6 +39,15 @@ public class AnnualData extends BaseTimeEntity {
     private BigDecimal growthRate;        // 성장률
 
     // business
+    public void create(Company company, Integer year) {
+        this.company = company;
+        this.year = year;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
     public void updateEmployeeData(Integer totalEmployees, Integer newEmployees, Integer departedEmployees) {
         this.totalEmployees = totalEmployees;
         this.newEmployees = newEmployees;
