@@ -15,6 +15,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+        indexes = {
+                @Index(name = "idx_company_name", columnList = "name"),
+        }
+)
 public class Company extends BaseTimeEntity {
 
     @Id
@@ -45,7 +50,6 @@ public class Company extends BaseTimeEntity {
     /** todo
      * 1.annualData
      * 2. jobPostings
-     * 3. scraps
      *
      */
 
