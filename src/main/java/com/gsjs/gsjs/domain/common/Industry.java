@@ -1,5 +1,7 @@
 package com.gsjs.gsjs.domain.common;
 
+import com.gsjs.gsjs.exception.object.domain.IndustryHandler;
+import com.gsjs.gsjs.exception.payload.code.ErrorStatus;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -24,8 +26,7 @@ public enum Industry {
         return java.util.Arrays.stream(values())
                 .filter(industry -> industry.name.equals(name))
                 .findFirst()
-                //todo implement exception
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Industry name: " + name));
+                .orElseThrow(() -> new IndustryHandler(ErrorStatus.INDUSTRY_NOT_FOUND));
     }
 
 }

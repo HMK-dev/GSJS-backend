@@ -1,5 +1,7 @@
 package com.gsjs.gsjs.domain.common;
 
+import com.gsjs.gsjs.exception.object.domain.RegionHandler;
+import com.gsjs.gsjs.exception.payload.code.ErrorStatus;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -30,8 +32,7 @@ public enum Region {
         return java.util.Arrays.stream(values())
                 .filter(region -> region.name.equals(name))
                 .findFirst()
-                //todo implement exception
-                .orElseThrow(() -> new IllegalArgumentException("Invalid Region name: " + name));
+                .orElseThrow(() -> new RegionHandler(ErrorStatus.REGION_NOT_FOUND));
     }
 
 }

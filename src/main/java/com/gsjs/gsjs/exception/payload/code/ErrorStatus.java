@@ -27,9 +27,19 @@ public enum ErrorStatus implements BaseCode {
     AUTH_ROLE_CANNOT_EXECUTE_URI(BAD_REQUEST, 4056, "해당 인가로는 실행할 수 없는 동작입니다."),
 
     //member error(4100 ~ 4149)
-    MEMBER_NOT_FOUND(NOT_FOUND, 4100, "찾을 수 없는 유저 정보입니다.");
+    MEMBER_NOT_FOUND(NOT_FOUND, 4100, "찾을 수 없는 유저 정보입니다."),
 
+    //company error(4150 ~ 4199)
+    COMPANY_NOT_FOUND(NOT_FOUND, 4150, "찾을 수 없는 기업입니다."),
 
+    //scrap error(4200 ~ 4209)
+
+    //region error(4210 ~ 4219)
+    REGION_NOT_FOUND(NOT_FOUND, 4210, "찾을 수 없는 지역입니다."),
+
+    //industry error(4220 ~ 4229)
+    INDUSTRY_NOT_FOUND(NOT_FOUND, 4220, "찾을 수 없는 산업입니다."),
+    ;
     private final HttpStatus httpStatus;
     private final Integer code;
     private final String message;

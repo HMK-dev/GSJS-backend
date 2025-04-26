@@ -14,7 +14,6 @@ public enum SocialType {
         return java.util.Arrays.stream(values())
                 .filter(socialType -> socialType.name.equals(name))
                 .findFirst()
-                //todo implement exception
                 .orElseThrow(() -> new IllegalArgumentException("Invalid SocialType name: " + name));
     }
 }
