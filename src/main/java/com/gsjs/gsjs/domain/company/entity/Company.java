@@ -39,7 +39,7 @@ public class Company extends BaseTimeEntity {
 
     private Integer establishedYear; //format-ex: 1990, 2000
 
-    private int viewCount;
+    private int viewCount = 0;
 
     //todo relationship
     /** todo
@@ -49,4 +49,25 @@ public class Company extends BaseTimeEntity {
      *
      */
 
+    //business
+    public void update(String name, String description, Industry industry, Region region,
+                       String address, String websiteUrl, Integer establishedYear) {
+        this.name = name;
+        this.description = description;
+        this.industry = industry;
+        this.region = region;
+        this.address = address;
+        this.websiteUrl = websiteUrl;
+        this.establishedYear = establishedYear;
+    }
+
+    public void addViewCount() {
+        this.viewCount++;
+    }
+
+    public void addViewCount(int count) {
+        this.viewCount += count;
+    }
+
+    //validate
 }
