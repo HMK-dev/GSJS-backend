@@ -65,7 +65,7 @@ public class Company extends BaseTimeEntity {
     private List<AnnualData> annualDataList = new ArrayList<>();
 
     //business
-    public Company create(String name, String address, Industry industry, Region region) {
+    public static Company create(String name, String address, Industry industry, Region region) {
         return Company.builder()
                 .name(name)
                 .address(address)

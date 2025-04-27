@@ -2,6 +2,7 @@ package com.gsjs.gsjs.domain.company.service;
 
 import com.gsjs.gsjs.domain.common.Industry;
 import com.gsjs.gsjs.domain.company.entity.Company;
+import com.gsjs.gsjs.domain.company.repository.CompanyRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
@@ -13,13 +14,17 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 @Slf4j
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class CompanyExcelService {
+
+    private final CompanyRepository companyRepository;
 
     private final int BATCH_SIZE = 1000;
 
@@ -36,19 +41,43 @@ public class CompanyExcelService {
             Sheet sheet = workbook.getSheetAt(0); // 첫 번째 시트
             Iterator<Row> rowIterator = sheet.iterator(); // 반복 객체 생성
 
+            // 기업들 정보를 저장하는 List
+            // 지역별 좌표 리스트를 저장하는 Map
+            List<Company> companiesList = new ArrayList<>();
+
+
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
                 if (row.getRowNum() == 0 || isRowEmpty(row)) continue; // 첫 번째 줄은 헤더이므로 건너뜀
 
+
+                if (isBatchSizeReached(companiesList)) {
+                    saveCompanies(companiesList);
+                    companiesList.clear();
+                }
+
             }
 
+            // 나머지 저장
+            saveCompanies(companiesList);
+
+
         } catch (FileNotFoundException e) {
-            //todo implement exception
+            //todo implement file exception
             throw new IllegalArgumentException();
         } catch (IOException e) {
-            //todo implement exception
+            //todo implement file exception
             throw new IllegalArgumentException();
         }
+    }
+
+    //todo refactoring -> BatchUpdate
+    private void saveCompanies(List<Company> companies) {
+        companyRepository.saveAll(companies);
+    }
+
+    private boolean isBatchSizeReached(List<Company> companies) {
+        return companies.size() >= BATCH_SIZE;
     }
 
     private boolean isRowEmpty(Row row) {
@@ -69,8 +98,9 @@ public class CompanyExcelService {
         String address = getCellString(row, 3);//D
 
         Industry industry = Industry.fromName(industryName);
+        //todo region
 
-        return Company.builder().build();
+        return Company.create(name, address, industry, null);
     }
 
     private String getCellString(Row row, int index) {
