@@ -34,6 +34,7 @@ public class Company extends BaseTimeEntity {
     private String name;
 
     @Lob
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -58,7 +59,7 @@ public class Company extends BaseTimeEntity {
      */
 
     //relation
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AnnualData> annualDataList = new ArrayList<>();
 
     //business
