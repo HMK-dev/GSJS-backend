@@ -4,8 +4,10 @@ import com.gsjs.gsjs.exception.object.general.GeneralException;
 import com.gsjs.gsjs.exception.payload.code.ErrorStatus;
 import com.gsjs.gsjs.exception.payload.code.Reason;
 import com.gsjs.gsjs.exception.payload.dto.ApiResponseDto;
+import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -21,6 +23,8 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@Hidden
+@Slf4j
 @RestControllerAdvice(annotations = {RestController.class})
 public class ExceptionAdvice extends ResponseEntityExceptionHandler {
     private static final String CONSTRAINT_VIOLATION_EXCEPTION_ERROR_MESSAGE = "ConstraintViolationException 추출 도중 에러 발생";
