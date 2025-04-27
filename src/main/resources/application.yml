@@ -30,6 +30,11 @@ logging:
     org.springframework.web: debug
 
 
+file:
+  gangso-company:
+    path:
+      resources/data/excel/gangsoCompany/
+
 #
 #app:
 #  jwt:

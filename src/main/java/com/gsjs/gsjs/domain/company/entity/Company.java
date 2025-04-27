@@ -43,6 +43,8 @@ public class Company extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Region region;
 
+    private String businessRegistrationNumber; // 사업자등록번호
+
     private String address;
 
     private String websiteUrl;
@@ -63,6 +65,16 @@ public class Company extends BaseTimeEntity {
     private List<AnnualData> annualDataList = new ArrayList<>();
 
     //business
+    public Company create(String name, String address, Industry industry, Region region) {
+        return Company.builder()
+                .name(name)
+                .address(address)
+                .industry(industry)
+                .region(region)
+                .build();
+    }
+
+
     public void addAnnualData(AnnualData annualData) {
         this.annualDataList.add(annualData);
         annualData.setCompany(this);
