@@ -43,6 +43,7 @@ public class Company extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Region region;
 
+    @Column(unique = true)
     private String businessRegistrationNumber; // 사업자등록번호
 
     private String address;

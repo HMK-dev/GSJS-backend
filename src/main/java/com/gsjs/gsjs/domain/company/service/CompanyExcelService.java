@@ -50,7 +50,6 @@ public class CompanyExcelService {
                 Row row = rowIterator.next();
                 if (row.getRowNum() == 0 || isRowEmpty(row)) continue; // 첫 번째 줄은 헤더이므로 건너뜀
 
-
                 if (isBatchSizeReached(companiesList)) {
                     saveCompanies(companiesList);
                     companiesList.clear();
