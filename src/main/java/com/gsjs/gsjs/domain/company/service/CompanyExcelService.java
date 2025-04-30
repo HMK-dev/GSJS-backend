@@ -3,6 +3,8 @@ package com.gsjs.gsjs.domain.company.service;
 import com.gsjs.gsjs.domain.common.Industry;
 import com.gsjs.gsjs.domain.company.entity.Company;
 import com.gsjs.gsjs.domain.company.repository.CompanyRepository;
+import com.gsjs.gsjs.exception.object.domain.FileHandler;
+import com.gsjs.gsjs.exception.payload.code.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
@@ -62,11 +64,9 @@ public class CompanyExcelService {
 
 
         } catch (FileNotFoundException e) {
-            //todo implement file exception
-            throw new IllegalArgumentException();
+            throw new FileHandler(ErrorStatus.FILE_NOT_FOUND);
         } catch (IOException e) {
-            //todo implement file exception
-            throw new IllegalArgumentException();
+            throw new FileHandler(ErrorStatus.FILE_READ_ERROR);
         }
     }
 
@@ -106,4 +106,4 @@ public class CompanyExcelService {
         return row.getCell(index).getStringCellValue();
     }
 
-}
+}3
