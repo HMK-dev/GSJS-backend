@@ -43,6 +43,14 @@ public enum ErrorStatus implements BaseCode {
     //annual data error(4230 ~ 4239)
     ANNUAL_DATA_NOT_FOUND(NOT_FOUND, 4230, "찾을 수 없는 연간 데이터입니다."),
     ANNUAL_DATA_ALREADY_EXISTS(CONFLICT, 4231, "이미 존재하는 연간 데이터입니다."),
+
+    // File Error (4240 ~ 4249)
+    FILE_READ_ERROR(INTERNAL_SERVER_ERROR, 4240, "파일을 읽는 중 오류가 발생했습니다."),
+    FILE_NOT_FOUND(NOT_FOUND, 4241, "파일을 찾을 수 없습니다."),
+    FILE_INVALID_EXTENSION(BAD_REQUEST, 4242, "잘못된 형식의 파일입니다."),
+    FILE_EXTENSION_NOT_FOUND(NOT_FOUND, 4243, "파일의 형식을 찾을 수 없습니다."),
+    FILE_UPLOAD_FAILED(INTERNAL_SERVER_ERROR, 4244, "파일 업로드에 실패했습니다."),
+
     ;
     private final HttpStatus httpStatus;
     private final Integer code;
