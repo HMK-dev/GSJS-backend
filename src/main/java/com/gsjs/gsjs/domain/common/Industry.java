@@ -34,27 +34,15 @@ public enum Industry {
     ;
 
     private final String name;
-    private static final Double SIMILARITY_THRESHOLD = 0.90; // 90% 이상 유사도
-
 
     public static Industry fromName(String name) {
         if (name == null) return OTHER;
 
         return java.util.Arrays.stream(values())
-                .map(industry -> new java.util.AbstractMap.SimpleEntry<>(industry, calculateSimilarity(industry.name(), name)))
-                .filter(entry -> entry.getValue() >= SIMILARITY_THRESHOLD)
-                .max(Map.Entry.comparingByValue())
-                .map(java.util.Map.Entry::getKey)
+                .filter(industry -> industry.name.equals(name))
+                .findFirst()
                 .orElse(OTHER);
     }
 
 
-    private static double calculateSimilarity(String str1, String str2) {
-        // Levenshtein distance 기반 유사도 계산
-        int distance = StringUtils.getLevenshteinDistance(str1, str2);
-        int maxLength = Math.max(str1.length(), str2.length());
-
-        // 유사도 계산: (최대 길이 - 편집 거리) / 최대 길이
-        return 1.0 - (double) distance / maxLength;
-    }
 }
