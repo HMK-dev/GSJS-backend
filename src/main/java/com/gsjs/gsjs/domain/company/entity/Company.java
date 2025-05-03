@@ -22,6 +22,7 @@ import java.util.List;
 @Table(
         indexes = {
                 @Index(name = "idx_company_name", columnList = "name"),
+                @Index(name = "idx_company_bizNo", columnList = "bizNo"),
         }
 )
 public class Company extends BaseTimeEntity {
@@ -33,6 +34,9 @@ public class Company extends BaseTimeEntity {
     @Column(unique = true)
     private String name;
 
+    @Column(unique = true)
+    private String bizNo; // 사업자등록번호
+
     @Lob
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -40,17 +44,18 @@ public class Company extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Industry industry;
 
+    private String industryDetail;
+
     @Enumerated(EnumType.STRING)
     private Region region;
 
-    @Column(unique = true)
-    private String businessRegistrationNumber; // 사업자등록번호
-
     private String address;
+
+    private String postalCode;
 
     private String websiteUrl;
 
-    private Integer establishedYear; //format-ex: 1990, 2000
+    private Integer establishedYear;
 
     private int viewCount = 0;
 
@@ -66,30 +71,22 @@ public class Company extends BaseTimeEntity {
     private List<AnnualData> annualDataList = new ArrayList<>();
 
     //business
-    public static Company create(String name, String address, Industry industry, Region region) {
+    public static Company create(String name, String bizNo, String address, Industry industry, String industryDetail,
+                                 Region region, String postalCode) {
         return Company.builder()
                 .name(name)
+                .bizNo(bizNo)
+                .postalCode(postalCode)
+                .industryDetail(industryDetail)
                 .address(address)
                 .industry(industry)
                 .region(region)
                 .build();
     }
 
-
     public void addAnnualData(AnnualData annualData) {
         this.annualDataList.add(annualData);
         annualData.setCompany(this);
-    }
-
-    public void update(String name, String description, Industry industry, Region region,
-                       String address, String websiteUrl, Integer establishedYear) {
-        this.name = name;
-        this.description = description;
-        this.industry = industry;
-        this.region = region;
-        this.address = address;
-        this.websiteUrl = websiteUrl;
-        this.establishedYear = establishedYear;
     }
 
     public void addViewCount() {
@@ -98,6 +95,20 @@ public class Company extends BaseTimeEntity {
 
     public void addViewCount(int count) {
         this.viewCount += count;
+    }
+
+    //update
+    public void updateDescription(String description) {
+        this.description = description;
+    }
+
+
+    public void updateWebsiteUrl(String websiteUrl) {
+        this.websiteUrl = websiteUrl;
+    }
+
+    public void updateEstablishedYear(Integer establishedYear) {
+        this.establishedYear = establishedYear;
     }
 
     //validate

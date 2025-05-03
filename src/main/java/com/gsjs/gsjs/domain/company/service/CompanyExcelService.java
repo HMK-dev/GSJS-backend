@@ -1,6 +1,7 @@
 package com.gsjs.gsjs.domain.company.service;
 
 import com.gsjs.gsjs.domain.common.Industry;
+import com.gsjs.gsjs.domain.common.Region;
 import com.gsjs.gsjs.domain.company.entity.Company;
 import com.gsjs.gsjs.domain.company.repository.CompanyRepository;
 import com.gsjs.gsjs.exception.object.domain.FileHandler;
@@ -30,18 +31,6 @@ public class CompanyExcelService {
 
     private final int BATCH_SIZE = 1000;
 
-    /**
-     * 강소기업 엑셀 구조
-     * Column
-     * 0: 연번
-     * 1: 사업자명 ex: (주)석경에이티 - String
-     * 2: 사업자등록번호 -unique key - String
-     * 3: 업종명(대분류) - enum
-     * 4: 소재지 - address - string
-     * 5: 지역 ex: 경기, 경남 .. - enum
-     * 6: 우편번호 - string
-     * 7: 사업장업종상세정보 - string
-     */
 
     @Value("${file.gangso-company.path}")
     private String FILE_PATH;
@@ -57,7 +46,6 @@ public class CompanyExcelService {
             Iterator<Row> rowIterator = sheet.iterator(); // 반복 객체 생성
 
             // 기업들 정보를 저장하는 List
-            // 지역별 좌표 리스트를 저장하는 Map
             List<Company> companiesList = new ArrayList<>();
 
 
@@ -65,6 +53,10 @@ public class CompanyExcelService {
                 Row row = rowIterator.next();
                 if (row.getRowNum() == 0 || isRowEmpty(row)) continue; // 첫 번째 줄은 헤더이므로 건너뜀
 
+                Company company = rowToCompany(row);
+                companiesList.add(company);
+
+                //BATCH_SIZE 초과시 저장
                 if (isBatchSizeReached(companiesList)) {
                     saveCompanies(companiesList);
                     companiesList.clear();
@@ -74,7 +66,6 @@ public class CompanyExcelService {
 
             // 나머지 저장
             saveCompanies(companiesList);
-
 
         } catch (FileNotFoundException e) {
             throw new FileHandler(ErrorStatus.FILE_NOT_FOUND);
@@ -104,19 +95,35 @@ public class CompanyExcelService {
     }
 
     //excel row -> Company
+    /**
+     * 강소기업 엑셀 구조
+     * Column
+     * 0: 연번
+     * 1: 사업자명 ex: (주)석경에이티 - String
+     * 2: 사업자등록번호 -unique key - String
+     * 3: 업종명(대분류) - enum
+     * 4: 소재지 - address - string
+     * 5: 지역 ex: 경기, 경남 .. - enum
+     * 6: 우편번호 - string
+     * 7: 사업장업종상세정보 - string
+     */
     private Company rowToCompany(Row row) {
-        String name = getCellString(row, 1); //B
-        String industryName = getCellString(row, 2); //C
-        String address = getCellString(row, 3);//D
+        String name = getCellString(row, 1); // 사업자명
+        String bizNo = getCellString(row, 2); // 사업자등록번호
+        String address = getCellString(row, 4); // 소재지
+        String industry = getCellString(row, 3); // 업종명(대분류)
+        String region = getCellString(row, 5); // 지역
+        String postalCode = getCellString(row, 6); // 우편번호
+        String industryDetail = getCellString(row, 7); // 사업장업종상세정보
 
-        Industry industry = Industry.fromName(industryName);
-        //todo region
+        Region regionEnum = Region.fromName(region);
+        Industry industryEnum = Industry.fromName(industry);
 
-        return Company.create(name, address, industry, null);
+        return Company.create(name, bizNo, address, industryEnum, industryDetail, regionEnum, postalCode);
     }
 
     private String getCellString(Row row, int index) {
         return row.getCell(index).getStringCellValue();
     }
 
-}3
+}
