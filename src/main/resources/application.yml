@@ -33,7 +33,7 @@ logging:
 file:
   gangso-company:
     path:
-      resources/data/excel/gangsoCompany/
+      data/excel/company-data/
 
 #
 #app:
