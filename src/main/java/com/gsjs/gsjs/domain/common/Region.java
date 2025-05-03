@@ -5,6 +5,9 @@ import com.gsjs.gsjs.exception.payload.code.ErrorStatus;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.Arrays;
+import java.util.Objects;
+
 @Getter
 @RequiredArgsConstructor
 public enum Region {
@@ -25,16 +28,15 @@ public enum Region {
     GYEONGBUK("경북"),
     GYEONGNAM("경남"),
     JEJU("제주"),
-    NONE("NONE")
-    ;
+    NONE("NONE");
 
     private final String name;
 
     public static Region fromName(String name) {
-        return java.util.Arrays.stream(values())
-                .filter(region -> region.name.equals(name))
+        return Arrays.stream(values())
+                .filter(region -> Objects.equals(region.name, name))
                 .findFirst()
                 .orElse(NONE);
-    }
 
+    }
 }

@@ -38,6 +38,8 @@ public enum Industry {
 
 
     public static Industry fromName(String name) {
+        if (name == null) return OTHER;
+
         return java.util.Arrays.stream(values())
                 .map(industry -> new java.util.AbstractMap.SimpleEntry<>(industry, calculateSimilarity(industry.name(), name)))
                 .filter(entry -> entry.getValue() >= SIMILARITY_THRESHOLD)

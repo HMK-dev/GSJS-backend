@@ -111,8 +111,8 @@ public class CompanyExcelService {
     private Company rowToCompany(Row row) {
         String name = getCellString(row, 1); // 사업자명
         String bizNo = getCellString(row, 2); // 사업자등록번호
-        String address = getCellString(row, 4); // 소재지
         String industry = getCellString(row, 3); // 업종명(대분류)
+        String address = getCellString(row, 4); // 소재지
         String region = getCellString(row, 5); // 지역
         String postalCode = getCellString(row, 6); // 우편번호
         String industryDetail = getCellString(row, 7); // 사업장업종상세정보
