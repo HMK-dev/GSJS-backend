@@ -49,7 +49,6 @@ public class CompanyExcelService {
             // 기업들 정보를 저장하는 List
             List<Company> companiesList = new ArrayList<>();
 
-
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
                 if (row.getRowNum() == 0 || isRowEmpty(row)) continue; // 첫 번째 줄은 헤더이므로 건너뜀
