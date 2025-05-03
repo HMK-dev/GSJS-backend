@@ -30,6 +30,19 @@ public class CompanyExcelService {
 
     private final int BATCH_SIZE = 1000;
 
+    /**
+     * 강소기업 엑셀 구조
+     * Column
+     * 0: 연번
+     * 1: 사업자명 ex: (주)석경에이티 - String
+     * 2: 사업자등록번호 -unique key - String
+     * 3: 업종명(대분류) - enum
+     * 4: 소재지 - address - string
+     * 5: 지역 ex: 경기, 경남 .. - enum
+     * 6: 우편번호 - string
+     * 7: 사업장업종상세정보 - string
+     */
+
     @Value("${file.gangso-company.path}")
     private String FILE_PATH;
 
