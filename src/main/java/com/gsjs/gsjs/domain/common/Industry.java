@@ -43,7 +43,7 @@ public enum Industry {
                 .filter(entry -> entry.getValue() >= SIMILARITY_THRESHOLD)
                 .max(Map.Entry.comparingByValue())
                 .map(java.util.Map.Entry::getKey)
-                .orElseThrow(() -> new IndustryHandler(ErrorStatus.INDUSTRY_NOT_FOUND));
+                .orElse(OTHER);
     }
 
 

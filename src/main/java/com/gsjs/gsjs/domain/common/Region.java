@@ -34,7 +34,7 @@ public enum Region {
         return java.util.Arrays.stream(values())
                 .filter(region -> region.name.equals(name))
                 .findFirst()
-                .orElseThrow(() -> new RegionHandler(ErrorStatus.REGION_NOT_FOUND));
+                .orElse(NONE);
     }
 
 }
