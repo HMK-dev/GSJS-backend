@@ -3,6 +3,8 @@ package com.gsjs.gsjs.domain.annualData.entity;
 import com.gsjs.gsjs.domain.auditing.entity.BaseTimeEntity;
 import com.gsjs.gsjs.domain.company.entity.Company;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +37,10 @@ public class AnnualData extends BaseTimeEntity {
     private Company company;
 
     private Integer year; // format-ex: 1990, 2000
+
+    @Min(value = 1)
+    @Max(value = 12)
+    private Integer month; // format-ex: 1 ~ 12
 
     // 국민연금 데이터
     private Integer totalEmployees;       // 국민연금 총 가입자 수
