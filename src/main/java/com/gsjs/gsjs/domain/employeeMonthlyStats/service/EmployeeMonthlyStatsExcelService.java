@@ -1,7 +1,7 @@
-package com.gsjs.gsjs.domain.annualData.service;
+package com.gsjs.gsjs.domain.employeeMonthlyStats.service;
 
-import com.gsjs.gsjs.domain.annualData.entity.AnnualData;
-import com.gsjs.gsjs.domain.annualData.repository.AnnualDataRepository;
+import com.gsjs.gsjs.domain.employeeMonthlyStats.entity.EmployeeMonthlyStats;
+import com.gsjs.gsjs.domain.employeeMonthlyStats.repository.EmployeeMonthlyStatsRepository;
 import com.gsjs.gsjs.domain.company.adaptor.CompanyAdaptor;
 import com.gsjs.gsjs.domain.company.entity.Company;
 import com.gsjs.gsjs.exception.object.domain.FileHandler;
@@ -9,7 +9,6 @@ import com.gsjs.gsjs.exception.payload.code.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,20 +22,20 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class AnnualDataExcelService {
+public class EmployeeMonthlyStatsExcelService {
 
     private final CompanyAdaptor companyAdaptor;
-    private final AnnualDataRepository annualDataRepository;
+    private final EmployeeMonthlyStatsRepository employeeMonthlyStatsRepository;
 
     private final int BATCH_SIZE = 1000;
 
-    public void importAnnulDataFromExcelFiles(List<MultipartFile> multipartFiles) {
+    public void importEmployeeDataFromExcelFiles(List<MultipartFile> multipartFiles) {
         for (MultipartFile multipartFile : multipartFiles) {
-            importAnnualDataFromExcel(multipartFile);
+            importEmployeeDataFromExcel(multipartFile);
         }
     }
 
-    public void importAnnualDataFromExcel(MultipartFile multipartFile) {
+    public void importEmployeeDataFromExcel(MultipartFile multipartFile) {
         try (InputStream inputStream = multipartFile.getInputStream()){
             //excel -> Apache POI workbook 객체로 로드
             Workbook workbook = WorkbookFactory.create(inputStream);
@@ -44,25 +43,25 @@ public class AnnualDataExcelService {
             Iterator<Row> rowIterator = sheet.iterator(); // 반복 객체 생성
 
             // 기업들 정보를 저장하는 List
-            List<AnnualData> annualDataList = new ArrayList<>();
+            List<EmployeeMonthlyStats> employeeMonthlyStatsList = new ArrayList<>();
 
             while (rowIterator.hasNext()) {
                 Row row = rowIterator.next();
                 if (row.getRowNum() == 0 || isRowEmpty(row)) continue; // 첫 번째 줄은 헤더이므로 건너뜀
 
-                AnnualData annualData = rowToAnnualData(row);
-                annualDataList.add(annualData);
+                EmployeeMonthlyStats employeeMonthlyStats = rowToEmployeeData(row);
+                employeeMonthlyStatsList.add(employeeMonthlyStats);
 
                 //BATCH_SIZE 초과시 저장
-                if (isBatchSizeReached(annualDataList)) {
-                    saveAllAnnualData(annualDataList);
-                    annualDataList.clear();
+                if (isBatchSizeReached(employeeMonthlyStatsList)) {
+                    saveAllEmployeeData(employeeMonthlyStatsList);
+                    employeeMonthlyStatsList.clear();
                 }
 
             }
 
             // 나머지 저장
-            saveAllAnnualData(annualDataList);
+            saveAllEmployeeData(employeeMonthlyStatsList);
 
         } catch (FileNotFoundException e) {
             throw new FileHandler(ErrorStatus.FILE_NOT_FOUND);
@@ -72,8 +71,8 @@ public class AnnualDataExcelService {
     }
 
     //todo refactoring -> BatchUpdate
-    private void saveAllAnnualData(List<AnnualData> annualDataList) {
-        annualDataRepository.saveAll(annualDataList);
+    private void saveAllEmployeeData(List<EmployeeMonthlyStats> employeeMonthlyStatsList) {
+        employeeMonthlyStatsRepository.saveAll(employeeMonthlyStatsList);
     }
 
     private <T> boolean isBatchSizeReached(List<T> list) {
@@ -91,9 +90,9 @@ public class AnnualDataExcelService {
         return true;
     }
 
-    //excel row -> AnnualData
+    //excel row -> employeeData
     /**
-     * 강소기업 엑셀 구조
+     * 국민연금 엑셀 구조
      * Column
      * 0: 작성 날짜 ex: 2018-05, delimiter = "-"
      * 1: 사업자명 ex: (주)석경에이티 - String
@@ -102,7 +101,7 @@ public class AnnualDataExcelService {
      * 20: 신규 가입자 수 - Integer - U col
      * 21: 상실 가입자 수 - Integer - V col
      */
-    private AnnualData rowToAnnualData(Row row) {
+    private EmployeeMonthlyStats rowToEmployeeData(Row row) {
         String date = getCellString(row, 0); // 작성 날짜
         Integer year = Integer.parseInt(date.split("-")[0]); // 연도
         Integer month = Integer.parseInt(date.split("-")[1]); // 월
@@ -114,15 +113,11 @@ public class AnnualDataExcelService {
         String lostEmployees = getCellString(row, 21); // 상실 가입자 수
 
         Company company = companyAdaptor.queryByBizNo(bizNo);
-        AnnualData annualData = AnnualData.create(year, month);
-        annualData.setCompany(company);
-        annualData.updateEmployeeData(
-                Integer.parseInt(totalEmployees),
-                Integer.parseInt(newEmployees),
-                Integer.parseInt(lostEmployees)
-        );
+        EmployeeMonthlyStats employeeMonthlyStats = EmployeeMonthlyStats.create(year, month,
+                Integer.parseInt(totalEmployees), Integer.parseInt(newEmployees), Integer.parseInt(lostEmployees));
+        employeeMonthlyStats.setCompany(company);
 
-        return annualData;
+        return employeeMonthlyStats;
     }
 
     private String getCellString(Row row, int index) {

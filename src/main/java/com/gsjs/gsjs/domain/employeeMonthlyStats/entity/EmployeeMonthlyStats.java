@@ -1,4 +1,4 @@
-package com.gsjs.gsjs.domain.annualData.entity;
+package com.gsjs.gsjs.domain.employeeMonthlyStats.entity;
 
 import com.gsjs.gsjs.domain.auditing.entity.BaseTimeEntity;
 import com.gsjs.gsjs.domain.company.entity.Company;
@@ -26,7 +26,7 @@ import java.math.BigDecimal;
                 )
         }
 )
-public class AnnualData extends BaseTimeEntity {
+public class EmployeeMonthlyStats extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,16 +47,15 @@ public class AnnualData extends BaseTimeEntity {
     private Integer newEmployees;         // 신규 가입자 수
     private Integer lostEmployees;    // 탈퇴자 수
 
-    // 재무 데이터
-    private BigDecimal revenue;           // 매출액
-    private BigDecimal companyValue;      // 기업 가치
-    private BigDecimal growthRate;        // 성장률
-
     // business
-    public static AnnualData create(Integer year, Integer month) {
-        return AnnualData.builder()
+    public static EmployeeMonthlyStats create(Integer year, Integer month,
+                                              Integer totalEmployees, Integer newEmployees, Integer lostEmployees) {
+        return EmployeeMonthlyStats.builder()
                 .year(year)
                 .month(month)
+                .totalEmployees(totalEmployees)
+                .newEmployees(newEmployees)
+                .lostEmployees(lostEmployees)
                 .build();
     }
 
@@ -64,16 +63,5 @@ public class AnnualData extends BaseTimeEntity {
         this.company = company;
     }
 
-    public void updateEmployeeData(Integer totalEmployees, Integer newEmployees, Integer departedEmployees) {
-        this.totalEmployees = totalEmployees;
-        this.newEmployees = newEmployees;
-        this.lostEmployees = departedEmployees;
-    }
-
-    public void updateFinancialData(BigDecimal revenue, BigDecimal companyValue, BigDecimal growthRate) {
-        this.revenue = revenue;
-        this.companyValue = companyValue;
-        this.growthRate = growthRate;
-    }
-
 }
+
