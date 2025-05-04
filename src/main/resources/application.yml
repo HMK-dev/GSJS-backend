@@ -34,9 +34,6 @@ file:
   gangso-company:
     path:
       data/excel/company-data/
-  pension:
-    path:
-      data/excel/pension-data/
 
 #
 #app:

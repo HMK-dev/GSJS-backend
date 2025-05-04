@@ -2,8 +2,6 @@ package com.gsjs.gsjs.domain.annualData.service;
 
 import com.gsjs.gsjs.domain.annualData.entity.AnnualData;
 import com.gsjs.gsjs.domain.annualData.repository.AnnualDataRepository;
-import com.gsjs.gsjs.domain.common.Industry;
-import com.gsjs.gsjs.domain.common.Region;
 import com.gsjs.gsjs.domain.company.adaptor.CompanyAdaptor;
 import com.gsjs.gsjs.domain.company.entity.Company;
 import com.gsjs.gsjs.exception.object.domain.FileHandler;
@@ -12,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,15 +23,12 @@ import java.util.List;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class AnnulDataExcelService {
+public class AnnualDataExcelService {
 
     private final CompanyAdaptor companyAdaptor;
     private final AnnualDataRepository annualDataRepository;
 
     private final int BATCH_SIZE = 1000;
-
-    @Value("${file.pension.path}")
-    private String FILE_PATH;
 
     public void importAnnulDataFromExcelFiles(List<MultipartFile> multipartFiles) {
         for (MultipartFile multipartFile : multipartFiles) {
