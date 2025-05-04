@@ -113,10 +113,11 @@ public class EmployeeMonthlyStatsExcelService {
         String lostEmployees = getCellString(row, 21); // 상실 가입자 수
 
         Company company = companyAdaptor.queryByBizNo(bizNo);
+
         EmployeeMonthlyStats employeeMonthlyStats = EmployeeMonthlyStats.create(year, month,
                 Integer.parseInt(totalEmployees), Integer.parseInt(newEmployees), Integer.parseInt(lostEmployees));
-        employeeMonthlyStats.setCompany(company);
 
+        company.addEmployeeMonthlyStats(employeeMonthlyStats);
         return employeeMonthlyStats;
     }
 
