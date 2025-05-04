@@ -14,10 +14,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,17 +34,10 @@ public class CompanyExcelService {
 
     private final int BATCH_SIZE = 1000;
 
-
-    @Value("${file.gangso-company.path}")
-    private String FILE_PATH;
-
-    public void importCompaniesFromExcel(String fileName) {
-        try {
-            ClassPathResource resource = new ClassPathResource(FILE_PATH + fileName);
-            FileInputStream fis = new FileInputStream(resource.getFile());
-
+    public void importCompaniesFromExcel(MultipartFile multipartFile) {
+        try(InputStream inputStream = multipartFile.getInputStream()) {
             //excel -> Apache POI workbook 객체로 로드
-            Workbook workbook = WorkbookFactory.create(fis);
+            Workbook workbook = WorkbookFactory.create(inputStream);
             Sheet sheet = workbook.getSheetAt(0); // 첫 번째 시트
             Iterator<Row> rowIterator = sheet.iterator(); // 반복 객체 생성
 
