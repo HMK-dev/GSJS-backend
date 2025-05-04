@@ -1,5 +1,6 @@
 package com.gsjs.gsjs.domain.company.entity;
 
+import com.gsjs.gsjs.domain.companyQuarterlyFinance.entity.CompanyQuarterlyFinance;
 import com.gsjs.gsjs.domain.employeeMonthlyStats.entity.EmployeeMonthlyStats;
 import com.gsjs.gsjs.domain.auditing.entity.BaseTimeEntity;
 import com.gsjs.gsjs.domain.common.Industry;
@@ -69,6 +70,9 @@ public class Company extends BaseTimeEntity {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<EmployeeMonthlyStats> employeeMonthlyStatsList = new ArrayList<>();
 
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CompanyQuarterlyFinance> companyQuarterlyFinanceList = new ArrayList<>();
+
     //business
     public static Company create(String name, String bizNo, String address, Industry industry, String industryDetail,
                                  Region region, String postalCode) {
@@ -83,9 +87,14 @@ public class Company extends BaseTimeEntity {
                 .build();
     }
 
-    public void addAnnualData(EmployeeMonthlyStats employeeMonthlyStats) {
+    public void addEmployeeMonthlyStats(EmployeeMonthlyStats employeeMonthlyStats) {
         this.employeeMonthlyStatsList.add(employeeMonthlyStats);
         employeeMonthlyStats.setCompany(this);
+    }
+
+    public void addCompanyQuarterlyFinance(CompanyQuarterlyFinance companyQuarterlyFinance) {
+        this.companyQuarterlyFinanceList.add(companyQuarterlyFinance);
+        companyQuarterlyFinance.setCompany(this);
     }
 
     public void addViewCount() {
