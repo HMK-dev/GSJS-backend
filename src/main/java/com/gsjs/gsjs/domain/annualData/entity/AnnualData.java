@@ -45,7 +45,7 @@ public class AnnualData extends BaseTimeEntity {
     // 국민연금 데이터
     private Integer totalEmployees;       // 국민연금 총 가입자 수
     private Integer newEmployees;         // 신규 가입자 수
-    private Integer departedEmployees;    // 탈퇴자 수
+    private Integer lostEmployees;    // 탈퇴자 수
 
     // 재무 데이터
     private BigDecimal revenue;           // 매출액
@@ -53,9 +53,10 @@ public class AnnualData extends BaseTimeEntity {
     private BigDecimal growthRate;        // 성장률
 
     // business
-    public static AnnualData create(Integer year) {
+    public static AnnualData create(Integer year, Integer month) {
         return AnnualData.builder()
                 .year(year)
+                .month(month)
                 .build();
     }
 
@@ -66,7 +67,7 @@ public class AnnualData extends BaseTimeEntity {
     public void updateEmployeeData(Integer totalEmployees, Integer newEmployees, Integer departedEmployees) {
         this.totalEmployees = totalEmployees;
         this.newEmployees = newEmployees;
-        this.departedEmployees = departedEmployees;
+        this.lostEmployees = departedEmployees;
     }
 
     public void updateFinancialData(BigDecimal revenue, BigDecimal companyValue, BigDecimal growthRate) {
