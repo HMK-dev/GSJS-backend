@@ -9,6 +9,11 @@ import com.gsjs.gsjs.exception.payload.code.ErrorStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.usermodel.*;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,6 +31,8 @@ public class EmployeeMonthlyStatsExcelService {
 
     private final CompanyAdaptor companyAdaptor;
     private final EmployeeMonthlyStatsRepository employeeMonthlyStatsRepository;
+    private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private final int BATCH_SIZE = 1000;
 
@@ -36,7 +43,7 @@ public class EmployeeMonthlyStatsExcelService {
     }
 
     public void importEmployeeDataFromExcel(MultipartFile multipartFile) {
-        try (InputStream inputStream = multipartFile.getInputStream()){
+        try (InputStream inputStream = multipartFile.getInputStream()) {
             //excel -> Apache POI workbook 객체로 로드
             Workbook workbook = WorkbookFactory.create(inputStream);
             Sheet sheet = workbook.getSheetAt(0); // 첫 번째 시트
@@ -54,14 +61,14 @@ public class EmployeeMonthlyStatsExcelService {
 
                 //BATCH_SIZE 초과시 저장
                 if (isBatchSizeReached(employeeMonthlyStatsList)) {
-                    saveAllEmployeeData(employeeMonthlyStatsList);
+                    saveAllEmployeeDataBatch(employeeMonthlyStatsList);
                     employeeMonthlyStatsList.clear();
                 }
 
             }
 
             // 나머지 저장
-            saveAllEmployeeData(employeeMonthlyStatsList);
+            saveAllEmployeeDataBatch(employeeMonthlyStatsList);
 
         } catch (FileNotFoundException e) {
             throw new FileHandler(ErrorStatus.FILE_NOT_FOUND);
@@ -70,9 +77,61 @@ public class EmployeeMonthlyStatsExcelService {
         }
     }
 
-    //todo refactoring -> BatchUpdate
-    private void saveAllEmployeeData(List<EmployeeMonthlyStats> employeeMonthlyStatsList) {
-        employeeMonthlyStatsRepository.saveAll(employeeMonthlyStatsList);
+    //todo resolve duplicate error
+    //BatchUpdate
+    private void saveAllEmployeeDataBatch(List<EmployeeMonthlyStats> employeeMonthlyStatsList) {
+        if (employeeMonthlyStatsList.isEmpty()) return;
+        //BatchInsert
+        String sql = "INSERT INTO employee_monthly_stats (year, month, total_employees, new_employees, lost_employees, company_id) " +
+                "VALUES (?, ?, ?, ?, ?, ?) " +
+                "ON DUPLICATE KEY UPDATE " +  // DUPLICATE KEY 발생시 UPDATE
+                "total_employees = VALUES(total_employees), " +
+                "new_employees = VALUES(new_employees), " +
+                "lost_employees = VALUES(lost_employees)";
+
+        int batchSize = employeeMonthlyStatsList.size();
+        SqlParameterSource[] batch = new SqlParameterSource[batchSize];
+        for (int i = 0; i < batchSize; i++) {
+            EmployeeMonthlyStats stats = employeeMonthlyStatsList.get(i);
+            batch[i] = new MapSqlParameterSource()
+                    .addValue("year", stats.getYear())
+                    .addValue("month", stats.getMonth())
+                    .addValue("total_employees", stats.getTotalEmployees())
+                    .addValue("new_employees", stats.getNewEmployees())
+                    .addValue("lost_employees", stats.getLostEmployees())
+                    .addValue("company_id", stats.getCompany().getId());
+        }
+
+        try {
+            namedParameterJdbcTemplate.batchUpdate(sql, batch);
+        } catch (DataIntegrityViolationException e) {
+            // 배치 전체가 실패할 경우 개별적으로 처리
+            handleBatchFailure(employeeMonthlyStatsList, sql);
+        } catch (Exception e) {
+            log.info("배치 저장 중 오류 발생: {}", e.getMessage());
+        }
+    }
+
+
+    // 배치 실패 시 개별 처리를 위한 메소드
+    private void handleBatchFailure(List<EmployeeMonthlyStats> statsList, String sql) {
+        for (EmployeeMonthlyStats stats : statsList) {
+            try {
+                MapSqlParameterSource params = new MapSqlParameterSource()
+                        .addValue("year", stats.getYear())
+                        .addValue("month", stats.getMonth())
+                        .addValue("totalEmployees", stats.getTotalEmployees())
+                        .addValue("newEmployees", stats.getNewEmployees())
+                        .addValue("lostEmployees", stats.getLostEmployees())
+                        .addValue("companyId", stats.getCompany().getId());
+
+                namedParameterJdbcTemplate.update(sql, params);
+            } catch (DataIntegrityViolationException e) {
+                // 개별 항목 저장 실패 시 로그만 남기고 계속 진행
+                log.warn("중복 데이터 저장 시도 무시: year={}, month={}, companyId={}",
+                        stats.getYear(), stats.getMonth(), stats.getCompany().getId());
+            }
+        }
     }
 
     private <T> boolean isBatchSizeReached(List<T> list) {
@@ -91,6 +150,7 @@ public class EmployeeMonthlyStatsExcelService {
     }
 
     //excel row -> employeeData
+
     /**
      * 국민연금 엑셀 구조
      * Column
