@@ -1,5 +1,6 @@
 package com.gsjs.gsjs.presentation.employeeMonthlyStats.controller;
 
+import com.gsjs.gsjs.application.employeeMonthlyStats.excel.ImportAllEmployeeMonthlyStatsUseCase;
 import com.gsjs.gsjs.application.employeeMonthlyStats.excel.ImportEmployeeMonthlyStatsUseCase;
 import com.gsjs.gsjs.exception.payload.code.SuccessStatus;
 import com.gsjs.gsjs.exception.payload.dto.ApiResponseDto;
@@ -12,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class EmployeeMonthlyStatsController {
 
     private final ImportEmployeeMonthlyStatsUseCase importEmployeeMonthlyStatsUseCase;
+    private final ImportAllEmployeeMonthlyStatsUseCase importAllEmployeeMonthlyStatsUseCase;
 
     //test
     //todo admin
@@ -29,6 +33,15 @@ public class EmployeeMonthlyStatsController {
     @PostMapping("/import")
     public ApiResponseDto<?> importMonthlyEmployeeData(@RequestParam("file") MultipartFile file) {
         importEmployeeMonthlyStatsUseCase.execute(file);
+        return ApiResponseDto.onSuccess(SuccessStatus._SUCCESS);
+    }
+
+    //todo admin
+    @Operation(summary = "엑셀 파일들로 기업 월간 국민연금 데이터 정보 등록",
+            description = "복수의 엑셀 파일들을 통해 기업 월간 국민연금 가입자 정보를 등록합니다.")
+    @PostMapping("/importAll")
+    public ApiResponseDto<?> importAllMonthlyEmployeeData(@RequestParam("files") List<MultipartFile> files) {
+        importAllEmployeeMonthlyStatsUseCase.execute(files);
         return ApiResponseDto.onSuccess(SuccessStatus._SUCCESS);
     }
 
