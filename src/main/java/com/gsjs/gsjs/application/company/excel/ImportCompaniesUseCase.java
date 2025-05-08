@@ -6,6 +6,7 @@ import com.gsjs.gsjs.presentation.company.dto.request.CompanyRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @UseCase
@@ -15,10 +16,10 @@ public class ImportCompaniesUseCase {
 
     private final CompanyExcelService companyExcelService;
 
-    public void execute(CompanyRequest.File request) {
-        log.info("Importing companies from Excel file: {}", request.getFile().getName());
-        companyExcelService.importCompaniesFromExcel(request.getFile());
-        log.info("Successfully imported companies from Excel file: {}", request.getFile().getName());
+    public void execute(MultipartFile file) {
+        log.info("Importing companies from Excel file: {}", file.getName());
+        companyExcelService.importCompaniesFromExcel(file);
+        log.info("Successfully imported companies from Excel file: {}", file.getName());
     }
 
 }

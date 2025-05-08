@@ -22,7 +22,7 @@ import java.math.BigDecimal;
         uniqueConstraints = {
                 @UniqueConstraint(
                         name = "uk_annual_data_company_year",
-                        columnNames = {"company_id", "year"}
+                        columnNames = {"company_id", "year", "month"}
                 )
         }
 )

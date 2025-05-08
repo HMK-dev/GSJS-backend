@@ -6,6 +6,7 @@ import com.gsjs.gsjs.presentation.employeeMonthlyStats.dto.request.EmployeeMonth
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @UseCase
@@ -15,8 +16,8 @@ public class ImportEmployeeMonthlyStatsUseCase {
 
     private final EmployeeMonthlyStatsExcelService employeeMonthlyStatsExcelService;
 
-    public void execute(EmployeeMonthlyStatsRequest.Files request) {
-        employeeMonthlyStatsExcelService.importEmployeeDataFromExcelFiles(request.getFiles());
+    public void execute(MultipartFile file) {
+        employeeMonthlyStatsExcelService.importEmployeeDataFromExcel(file);
     }
 
 }

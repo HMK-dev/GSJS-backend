@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -23,11 +24,11 @@ public class EmployeeMonthlyStatsController {
 
     //test
     //todo admin
-    @Operation(summary = "엑셀 파일로 기업 연간 국민연금 데이터 정보 등록",
-            description = "엑셀 파일을 통해 기업 연간 국민연금 가입자 정보를 등록합니다.")
+    @Operation(summary = "엑셀 파일로 기업 월간 국민연금 데이터 정보 등록",
+            description = "단일 엑셀 파일을 통해 기업 월간 국민연금 가입자 정보를 등록합니다.")
     @PostMapping("/import")
-    public ApiResponseDto<?> importAnnualEmployeeData(@RequestBody EmployeeMonthlyStatsRequest.Files request) {
-        importEmployeeMonthlyStatsUseCase.execute(request);
+    public ApiResponseDto<?> importMonthlyEmployeeData(@RequestParam("file") MultipartFile file) {
+        importEmployeeMonthlyStatsUseCase.execute(file);
         return ApiResponseDto.onSuccess(SuccessStatus._SUCCESS);
     }
 
